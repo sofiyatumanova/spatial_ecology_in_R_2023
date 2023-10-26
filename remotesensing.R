@@ -17,5 +17,11 @@ im.list()
 b2 <- im.import("sentinel.dolomites.b2.tif") #we are importing the band 2 of Sentinel 2 (blue band)
 b2 # we see the information available about this band/image
 
+# chnaging the color ramp for better visualization 
+clb <- colorRampPalette(c("dark grey","grey","light grey")) (100)
+plot(b2, col=clb) # if the pixel absorbs blue it shows a dark grey, if the pixel reflects blue it is the light grey on the image
 
-
+# import the green band from Sentinel-2 (band 3)
+b3 <- im.import("sentinel.dolomites.b3.tif")
+cl <- colorRampPalette(c("dark grey","grey","light grey")) (100)
+plot(b3, col = cl)
