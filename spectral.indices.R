@@ -52,3 +52,21 @@ plot(dvi2006)
 cl <- colorRampPalette(c("dark blue", "yellow", "red", "black")) (100)
 plot(dvi2006, col = cl)
 
+# NDVI : Normalized Difference Vegetation Index | always ranges from -1 to 1
+
+ndvi1992 = dvi1992 / (m1992[[1]] + m1992[[2]])  # (NIR-R)/(NIR+R)
+plot(ndvi1992, col = cl) # the new range is exactly -1 to 1, therefore it can be compared with other images unlike DVI which has a different range
+# or ndvi1992 = (m1992[[1]] - m1992[[2]])/ (m1992[[1]] + m1992[[2]])
+
+# NDVI for 2006 image
+ndvi2006 = dvi2006 / (m2006[[1]] + m2006[[2]])  # (NIR-R)/(NIR+R)
+plot(ndvi2006, col = cl)
+
+par(mfrow=c(1,2)) # one row and two columns
+plot(ndvi1992, col= cl)
+plot(m2006, col = cl)
+
+
+# speeding up the calculation
+ndvi2006a <- im.ndvi(m2006, 1, 2) # function to calculate NDVI automatically is "im.ndvi" | 1 = NIR band , 2 = RED band
+plot(ndvi2006a, col = cl)
