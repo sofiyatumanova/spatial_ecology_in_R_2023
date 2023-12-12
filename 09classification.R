@@ -72,6 +72,9 @@ tabout
 # 1 forest    83    45
 # 2  human    17    55
 
+install.packages("ggplot2")
+install.packages("patchwork")
+library(patchwork)
 library(ggplot2)
 # final plot
 # x is the class, y is the column related to the year
@@ -82,5 +85,11 @@ p1
 p2 <- ggplot(tabout, aes(x=class, y=y2006, color=class)) + geom_bar(stat="identity", fill="white")
 p2
 
+p1 + p2 # to visualize the tables together
+
+# final output, rescaled
+p1 <- ggplot(tabout, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100))
+p2 <- ggplot(tabout, aes(x=class, y=y2006, color=class)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100))
+p1 + p2
 
 
