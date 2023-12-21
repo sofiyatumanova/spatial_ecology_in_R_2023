@@ -30,7 +30,22 @@ sd3 <- focal(nir, matrix(1/9, 3, 3), fun=sd) # the variable/band that we are usi
                                              # the function (fun) is the standard deviation (sd)
 plot(sd3)
 # we need to change the legend so that we can see the difference clearly
-viridisc <- colorRampPalette(viridis(7))(255)
-plot(sd3, col=viridisc)  # we see in the green where the geology is very complex and there is a lot of changes, the variability is high
+viridisc <- colorRampPalette(viridis(7))(255) # 7 colors and 255 values
+plot(sd3, col=viridisc)                       # we see in the green where the geology is very complex and there is a lot of changes, the variability is high
 
+# Exercise: calculate variability in a 7x7 moving window
+sd7 <- focal(nir, matrix(1/49, 7, 7), fun=sd)
+plot(sd7)
+viridisc <- colorRampPalette(viridis(7))(255) # 7 colors and 255 values
+plot(sd7, col=viridisc)                       # we see in the green where the geology is very complex and there is a lot of changes, the variability is high
 
+# Exercise: plot via par(mfrow() the 3x3 and the 7x7 standard deviation
+par(mfrow=c(1,2))
+plot(sd3, col=viridisc) # we see a very local calculation, the variability of the landscape in the NIR shows subtle differences
+plot(sd7, col=viridisc) # if we enlarge the moving window to 49 pixels we see an even higher variability
+
+# original image plus  the sd of 7 x 7
+par(mfrow=c(1,2))
+im.plotRGB(sent, r=2, g=1, b=3)
+plot(sd7, col=viridisc)  # we see where the terrain changes from snow (white) to bare soil (pink) we see that the variability graph is high in that area
+                         # in other words on the color palette we see an area of bright green or yellow
