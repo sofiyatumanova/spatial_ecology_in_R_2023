@@ -8,6 +8,8 @@
 # 04 Remote Sensing Visualization
 # 05 Spectral Indices
 # 06 Time Series
+# 07 External Data Import
+# 08 Copernicus data r
 
 #---------------
 
@@ -517,3 +519,83 @@ plot(gdif, col = clg)
 
 # exercise : make an RGB plot using different years
 im.plotRGB(stackg, r = 1, g = 2, b = 3) # using the different elements of a stack to create the RGB
+
+#---------------
+
+# 07 External Data Import
+
+#### External data || 16 November 2023
+
+# always put the packages on top of the working directory
+library(terra)
+# we set the directory in which we are working with
+# we need quotes because we are exiting R and going to the directory
+# set the \ to / 
+# find the directory where you saved your data / downloaded your data
+setwd("E:/Unibo/1Year.1Sem/Spatial Ecology in R")
+
+# function to upload the data "rast"
+# we put the name of the image we downloaded inside the function
+naja <- rast("najafiraq_etm_2003140_lrg.jpg")
+
+# we plot the image using a different function "plotRGB"
+plotRGB(naja, r=1, g=2, b=3)
+# second image from the same site and open it in R , call is najaaug because its august
+najaaug <- rast("najafiraq_oli_2023219_lrg.jpg")
+plotRGB(najaaug, r=1, g=2, b=3)
+
+# plot the two images together
+par(mfrow = c(2,1))
+plotRGB(naja, r=1, g=2, b=3)
+plotRGB(najaaug, r=1, g=2, b=3)
+# exam you can compare two images by plotting one element from each image
+
+# we will calculate the difference between naja and najaaug
+najadif= naja[[1]] - najaaug[[1]]
+cl <- colorRampPalette(c("brown","grey","orange")) (100)
+plot(najadif, col = cl) # we get a raster with the differences between them
+
+
+thailand <- rast("thailand_smoke.jpg")
+plotRGB(thailand , 1,2,3)
+
+#---------------
+
+# 08 Copernicus data r
+
+### Data From Copernicus | 28 November 2023
+
+library(ncdf4)
+library(terra)
+
+# install.packages(" put your package here")
+
+setwd("C:/Users/sofiy/Downloads")
+
+#function to import the data, importing the raster
+raster <- rast("c_gls_SSM1km_202311250000_CEURO_S1CSAR_V1.2.1.nc")
+
+# there are two elements lets use the first one
+
+plot(raster[[1]])
+
+# change the color palette
+cl <- colorRampPalette(c("red","orange","yellow")) (100)
+
+plot(raster[[1]], col = cl)
+
+# we want to crop our image, we need to specify the extent of the image
+# defining an extent in space, where you want to crop your element
+ext <- c(20, 23, 55, 57) # minlong, maxlong, minlat, maxlat | longitude is the x axis, latitude is the y axis
+rastercrop <- crop(raster, ext)
+plot(rastercrop[[1]]) # plots just the first element of the cropped raster
+
+#when you download another image, you can crop the second image, based on the extent of the first image by just using the crop function, and the same extent
+
+
+
+
+
+
+
+
