@@ -10,6 +10,9 @@
 # 06 Time Series
 # 07 External Data Import
 # 08 Copernicus data r
+# 09 Classification
+# 10 Variability
+# 11 PCA
 
 #---------------
 
@@ -591,6 +594,217 @@ rastercrop <- crop(raster, ext)
 plot(rastercrop[[1]]) # plots just the first element of the cropped raster
 
 #when you download another image, you can crop the second image, based on the extent of the first image by just using the crop function, and the same extent
+
+#---------------
+
+# 09 Classification
+
+# Classification | December 7 2023 
+
+# Procedure for Classifying Remote Sensing Data and estimate the amount of change in different classes
+
+library(imagery) # in the imagery package there is a function to list all the files "im.list()"
+library(terra)
+
+# listing all the files
+im.list()
+# there is a file related to the sun "Solar_Orbiter...."
+
+# importing the first image of the sun
+sun <- im.import("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg") # there is a direct plot of the raster in RGB, we can see the gases of the sun, with 3 levels of energy based on the colors
+
+# classifying the gases with the "im.classify()" function
+sunclass <- im.classify(sun, num_clusters = 3)
+plot(sunclass) # where the sun gas color is the lighest, thats where it has the most energy
+
+im.list()
+# importing the Mato Grosso images
+m2006 <- im.import("matogrosso_ast_2006209_lrg.jpg")                     
+m1992 <- im.import("matogrosso_l5_1992219_lrg.jpg")
+
+# classifying the image 1992
+m1992class <- im.classify(m1992, num_cluster=2)
+plot(m1992class) # classes: bare soil = 1 , forests = 2
+
+# classifying the image 2006
+m2006class <- im.classify(m2006, num_cluster=2)
+plot(m2006class) # classes: bare soil = 1, forests = 2
+
+# plotting them together
+par(mfrow = c(1,2))
+plot(m1992class[[1]])
+plot(m2006class[[1]])
+
+# we want to see the proportion of pixels in each clas, counts how many pixels are in forests, and how many are in bare soil
+f1992 <- freq(m1992class)
+f1992
+
+# 1992 image land cover percentage:
+# If we want to see the percentages, we first have to find the total number of pixels
+tot1992 <- ncell(m1992class) # total number of pixels
+# percentage
+p1992 <- f1992 * 100/ tot1992
+p1992
+# forest: 83%; human: 17%
+
+
+# 2006 image land cover percentage:
+f2006 <- freq(m2006class)
+f2006
+
+# If we want to see the percentages, we first have to find the total number of pixels
+tot2006 <- ncell(m2006class) # total number of pixels
+# percentage
+p2006 <- f2006 * 100/ tot2006
+p2006
+# forest: 45%; human: 55%
+
+# building the final table
+# defining the columns
+class <- c("forest", "human")
+y1992 <- c(83,17)
+y2006 <- c(45,55)
+# building the dataframe
+tabout <- data.frame(class,y1992,y2006)
+tabout
+
+# final table looks like this: 
+#   class y1992 y2006
+# 1 forest    83    45
+# 2  human    17    55
+
+install.packages("ggplot2")
+install.packages("patchwork")
+library(patchwork)
+library(ggplot2)
+# final plot
+# x is the class, y is the column related to the year
+# geom_bar is histograms
+# color for filling is white
+p1 <- ggplot(tabout, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white")
+p1
+p2 <- ggplot(tabout, aes(x=class, y=y2006, color=class)) + geom_bar(stat="identity", fill="white")
+p2
+
+p1 + p2 # to visualize the tables together
+
+# final output, rescaled
+p1 <- ggplot(tabout, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100))
+p2 <- ggplot(tabout, aes(x=class, y=y2006, color=class)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100))
+p1 + p2
+
+#---------------
+
+# 10 Variability
+
+### Variability | 19 December 2023
+# measurement of RS based variability
+
+library(imageRy)
+library(terra)
+library(viridis)
+
+# Importing Data
+im.list()
+sent <- im.import("sentinel.png")
+
+# Plotting data
+# band 1 = NIR
+# band 2 = Red
+# band 3 = Green
+
+im.plotRGB(sent, r=1, g=2, b=3)
+
+# Chnaging visualization
+im.plotRGB(sent, r=2, g=1, b=3)
+
+# Calculating variability
+
+nir <- sent[[1]] # nir is just the first element of sent
+plot(nir) # green part is vegetation, orange part is bear soil, range from 0 to 255 means it is an 8-bit image
+
+# moving window - we will use the moving window to calculate the standard deviation of 3 by 3 cells (9 cells)
+sd3 <- focal(nir, matrix(1/9, 3, 3), fun=sd) # the variable/band that we are using is NIR, then we have to describe the dimentions of the moving window with the matrix function
+                                             # the moving window is composed of 9 pixels, and distributed 3 by 3
+                                             # the function (fun) is the standard deviation (sd)
+plot(sd3)
+# we need to change the legend so that we can see the difference clearly
+viridisc <- colorRampPalette(viridis(7))(255) # 7 colors and 255 values
+plot(sd3, col=viridisc)                       # we see in the green where the geology is very complex and there is a lot of changes, the variability is high
+
+# Exercise: calculate variability in a 7x7 moving window
+sd7 <- focal(nir, matrix(1/49, 7, 7), fun=sd)
+plot(sd7)
+viridisc <- colorRampPalette(viridis(7))(255) # 7 colors and 255 values
+plot(sd7, col=viridisc)                       # we see in the green where the geology is very complex and there is a lot of changes, the variability is high
+
+# Exercise: plot via par(mfrow() the 3x3 and the 7x7 standard deviation
+par(mfrow=c(1,2))
+plot(sd3, col=viridisc) # we see a very local calculation, the variability of the landscape in the NIR shows subtle differences
+plot(sd7, col=viridisc) # if we enlarge the moving window to 49 pixels we see an even higher variability
+
+# original image plus  the sd of 7 x 7
+par(mfrow=c(1,2))
+im.plotRGB(sent, r=2, g=1, b=3)
+plot(sd7, col=viridisc)  # we see where the terrain changes from snow (white) to bare soil (pink) we see that the variability graph is high in that area
+                         # in other words on the color palette we see an area of bright green or yellow
+
+#---------------
+
+# 11 PCA
+
+#### Principal Component Analysis | December 21 2023
+
+library(imageRy)
+library(viridis)
+library(terra)
+
+im.list()
+
+sent <- im.import("sentinel.png")
+pairs(sent)   # gives us a lot of information, for example the correlation between the bands
+
+# Principal Component Analysis
+sent.pca <- im.pca2(sent) 
+  # the first component represents the most variability, in this case PC1 represents 77.26 percent of variability
+  # the other components have less and less variability
+
+# We can also isolat ethe first component
+sentpc <- im.pca2(sent)
+pc1 <- sentpc$PC1
+
+viridisc <- colorRampPalette(viridis(7))(255)
+plot(pc1, col = viridisc)
+
+# calculating the standard deviation ontop of pc1
+pc1sd3 <- focal(pc1, matrix(1/9, 3, 3), fun = sd)
+plot(pc1sd3, col = viridisc)
+
+pc1sd7 <- focal(pc1, matrix(1/49, 7, 7), fun = sd)
+plot(pc1sd7, col = viridisc)
+
+par(mfrow=c(2,3))
+im.plotRGB(sent,2,1,3) # sentinel original data
+# sd from the variability script Lesson 10
+plot(sd3, col= viridisc)
+plot(sd7, col= viridisc)
+plot(pc1, col = viridisc)
+plot(pc1sd3, col = viridisc)
+plot(pc1sd7, col = viridisc)
+
+# We want to stack all the new layers sd3, sd7, pc1sd3, pc1sd7 together
+sdstack <- c(sd3, sd7, pc1sd3, pc1sd7)
+names(sdstack) <- c("sd3", "sd7", "pc1sd3", "pc1sd7") # this way we can see the name of each band on top of it
+plot(sdstack, col = viridisc)  
+
+# the function focal can also be used for other statistics, like the average for example
+
+
+
+
+
+
+
 
 
 
