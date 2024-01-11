@@ -11,9 +11,49 @@ Here you can add some text if you want!
 
 In this case we obtain a result
 ```{r, eval=T}         # are stating what language we are using (R), and if we want to evaluated it or not (eval = True)
-2 + 3                  # when we click knit in R, the code will show in a grey box, and the result will be in a white box below
+2 + 3                  # when we click 'knit' in R, the code will show in a grey box, and the result will be in a white box below
 ```
 In this case we DO NOT obtain a result    # we don't put the hashtag here because we want this sentence to show up in the document
 ```{r, eval=F}         
 2 + 3                 
+```
+
+Using proper packages; the imageRy package has been built in Alma Mater for learning remote sensing
+```{r, eval=F}         
+library(imageRy)                 
+```
+Let's import some data, starting with a list of data
+```{r, eval=T}         
+im.list()                 
+```
+Importing Mato grosso area image:
+```{r, eval=T}         
+im.import("matogrosso_l5_1992219_lrg.jpg")
+```
+Importing Mato grosso area image:
+```{r, eval=T, warning=F}         
+im.import("matogrosso_l5_1992219_lrg.jpg")
+```
+In order to get info on the image, just type the name of the object:
+```{r, eval=F}         
+mato1992                 
+```
+Making a new plot of the Mato Grosso area with the NIR ontop of the green component of the RGB space:
+```{r, eval=T}         
+im.plotRGB(mato1992, r=2, g=1, b=3)                
+```
+Plotting several images all together:
+```{r, eval=T} 
+par(mfrow(2,2))
+im.plotRGB(mato1992, r=1, g=2, b=3)
+im.plotRGB(mato1992, r=1, g=2, b=3) 
+im.plotRGB(mato1992, r=1, g=2, b=3) 
+im.plotRGB(mato1992, r=1, g=2, b=3) 
+```
+Calculating spectral indices
+```{r, eval=T} 
+library(viridis)
+dvi <- mato1992[[1]]-mato1992[[2]]
+viridisc <- colorRampPalette(viridis(7))(255)
+plot(dvi, col=viridisc)
 ```
