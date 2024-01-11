@@ -28,14 +28,14 @@ im.list()
 ```
 Importing Mato grosso area image:
 ```{r, eval=T}         
-im.import("matogrosso_l5_1992219_lrg.jpg")
+mato1992 <- im.import("matogrosso_l5_1992219_lrg.jpg")
 ```
 Importing Mato grosso area image:
 ```{r, eval=T, warning=F}         
-im.import("matogrosso_l5_1992219_lrg.jpg")
+mato1992 <- im.import("matogrosso_l5_1992219_lrg.jpg")
 ```
 In order to get info on the image, just type the name of the object:
-```{r, eval=F}         
+```{r, eval=T}         
 mato1992                 
 ```
 Making a new plot of the Mato Grosso area with the NIR ontop of the green component of the RGB space:
@@ -52,8 +52,19 @@ im.plotRGB(mato1992, r=1, g=2, b=3)
 ```
 Calculating spectral indices
 ```{r, eval=T} 
-library(viridis)
+library(terra)
+library(viridisc)
 dvi <- mato1992[[1]]-mato1992[[2]]
 viridisc <- colorRampPalette(viridis(7))(255)
 plot(dvi, col=viridisc)
 ```
+
+Calculating Variability
+```{r, eval=T} 
+sd3 <- focal(mato1992[[1]], matrix(1/9, 3, 3), fun=sd)
+plot(sd3, col = viridisc)
+
+Calculating Variability
+```{r, eval=T} 
+sd5 <- focal(mato1992[[1]], matrix(1/25, 5, 5), fun=sd)
+plot(sd5, col = viridisc)
