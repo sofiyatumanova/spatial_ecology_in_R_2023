@@ -145,7 +145,8 @@ plot(elev)
 #-----------------------------
 # 02.2 Population Distribution
 
-# 10 October 2023
+# October 10 2023
+
 ### Why populations disperse over the landscape in a certain manner?
 #check OSGea website
 
@@ -289,6 +290,7 @@ plot(ord) # we can see from the plot that some species like to stay together (cl
 # 03.2 Communities Overlap
 
 # October 19 2023
+
 ## relation among species in time
 
 install.packages("overlap")
@@ -332,10 +334,11 @@ legend('topright', c("Tigers", "Macaques"), lty=c(1,2), col=c("black","blue"), b
 
 
 
-#-------------------------
+#-----------------------------
 # 04 Remote Sensing Visualization
 
 # November 2 2023
+
 ## Code to visualize remote sensing data
 
 library(devtools) # packages in R are also called libraries
@@ -438,10 +441,11 @@ pairs(stacksent)
 
 
 
-#-------------------------
+#-----------------------------
 # 05 Spectral Indices
 
 # November 7 2023 
+
 # vegetation indices
 
 library(imageRy)
@@ -518,7 +522,7 @@ plot(ndvi2006a, col = cl)
 #----------------------------
 # 06 Time Series
 
-# November 14, 2023
+# November 14 2023
 
 library(imageRy)
 library(terra)
@@ -584,7 +588,7 @@ im.plotRGB(stackg, r = 1, g = 2, b = 3) # using the different elements of a stac
 #----------------------------
 # 07 External Data Import
 
-# 16 November 2023
+# November 16 2023
 
 # always put the packages on top of the working directory
 library(terra)
@@ -624,7 +628,7 @@ plotRGB(thailand , 1,2,3)
 #-----------------------------
 # 08 Copernicus Data 
 
-# 28 November 2023
+# November 28 2023
 
 library(ncdf4)
 library(terra)
@@ -655,7 +659,7 @@ plot(rastercrop[[1]]) # plots just the first element of the cropped raster
 
 
 
-#---------------
+#---------------------
 # 09 Classification
 
 # December 7 2023 
@@ -754,10 +758,11 @@ p1 + p2
 
 
 
-#-------------------------
+#-------------------------------
 # 10 Variability
 
-# 19 December 2023
+# December 19 2023
+
 # measurement of RS based variability
 
 library(imageRy)
@@ -811,7 +816,7 @@ plot(sd7, col=viridisc)  # we see where the terrain changes from snow (white) to
 
 
 
-#---------------
+#------------------------------
 # 11 Principal Component Analysis
 
 # December 21 2023
