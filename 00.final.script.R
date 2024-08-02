@@ -4,20 +4,20 @@
 # 01 Beginning
 # 02.1 Population Density
 # 02.2 Population Distribution
-# 03 Communities Multivariate Analysis
+# 03.1 Communities Multivariate Analysis
+# 03.2 Communities Overlap
 # 04 Remote Sensing Visualization
 # 05 Spectral Indices
 # 06 Time Series
 # 07 External Data Import
-# 08 Copernicus data r
+# 08 Copernicus Data 
 # 09 Classification
 # 10 Variability
-# 11 PCA
+# 11 Principal Component Analysis
 
 
 
-#---------------
-
+#---------------------
 # 01 Beginning
 
 # it is important, for the exam that every operation that you comment what you are doing
@@ -59,8 +59,7 @@ plot(people,microplastics, pch=19, cex=2, col="blue") #col is to change the colo
 
 
 
-#---------------
-
+#-----------------------
 # 02.1 Population Density
 
       # code related to population ecology
@@ -143,11 +142,10 @@ plot(elev)
 
 
 
-#---------------
-
+#-----------------------------
 # 02.2 Population Distribution
 
-#### Population Distribution 03 || 10 October 2023
+# 10 October 2023
 ### Why populations disperse over the landscape in a certain manner?
 #check OSGea website
 
@@ -248,11 +246,10 @@ points(pres, cex =.5)
 
 
 
-#---------------
+#-------------------------------
+# 03.1 Communities Multivariate Analysis
 
-# 03 Communities Multivariate Analysis
-
-#### Lesson 03 Communities Multivariate Analysis | October 19 2023
+# October 19 2023
 
 # orination methods = multivariate analysis
 install.packages("vegan")
@@ -286,11 +283,59 @@ pldc1 + pldc2 #we see that these two percentages cover about 71% of the total
 
 plot(ord) # we can see from the plot that some species like to stay together (close location)
 
-#---------------
 
+
+#----------------------------
+# 03.2 Communities Overlap
+
+# October 19 2023
+## relation among species in time
+
+install.packages("overlap")
+library(overlap)
+
+# the  dataset is called "kerinci"
+data(kerinci)
+head(kerinci)
+summary(kerinci)
+
+# selecting the first species
+tiger <- kerinci[kerinci$Sps=="tiger",]  # the way to select tiger species from the whole dataset using SQL
+tiger
+
+
+# tiger
+# The unit of time is the day, so values range from 0 to 1. - duccio rocchini
+# The package overlap works entirely in radians: fitting density curves uses trigonometric functions (sin, cos, tan), - duccio rocchini
+# so this speeds up simulations. The conversion is straightforward: kerinci$Time * 2 * pi - duccio rocchini
+kerinci$timeRad <- kerinci$Time * 2 * pi   #adding a new column where we have this calculation (assigning the calculation to a new object)
+head(kerinci)
+
+tiger <- kerinci[kerinci$Sps=="tiger",] # we want to overwrite the old dataset, with the new dataset containing the new column timRad that we just made
+tiger
+
+# plotting the time within the tiger dataset
+timetig <- tiger$timeRad # creating a new variable
+densityPlot(timetig, rug = TRUE) # new function "densityPlot", rug is used to just smooth the lines
+                                 # from the plot we see the density of the tigers in time (how many times we have seen the tiger at a certain part of the day)
+
+# excersise : select only the data on the monkeys (macaque)
+macaque <- kerinci[kerinci$Sps=="macaque",]
+
+timemac <- macaque$timeRad # creating a new variable
+densityPlot(timemac, rug = TRUE)
+
+# we want to see the density of the tiger in time and the density of the macaque in time together to see the overlap
+# overlap
+overlapPlot(timetig, timemac) # we can see a moment during the day in which we can find the tiger and the macaque together
+legend('topright', c("Tigers", "Macaques"), lty=c(1,2), col=c("black","blue"), bty='n')    # labeling the graphs
+
+
+
+#-------------------------
 # 04 Remote Sensing Visualization
 
-###  November 2 2023
+# November 2 2023
 ## Code to visualize remote sensing data
 
 library(devtools) # packages in R are also called libraries
@@ -391,12 +436,12 @@ im.plotRGB(stacksent, r=3, g=2, b=4)
 
 pairs(stacksent)
 
-#---------------
 
+
+#-------------------------
 # 05 Spectral Indices
 
-### November 7 2023
-
+# November 7 2023 
 # vegetation indices
 
 library(imageRy)
@@ -468,11 +513,12 @@ plot(m2006, col = cl)
 ndvi2006a <- im.ndvi(m2006, 1, 2) # function to calculate NDVI automatically is "im.ndvi" | 1 = NIR band , 2 = RED band
 plot(ndvi2006a, col = cl)
 
-#---------------
 
+
+#----------------------------
 # 06 Time Series
 
-#### Time Series Analysis | November 14, 2023
+# November 14, 2023
 
 library(imageRy)
 library(terra)
@@ -533,11 +579,12 @@ plot(gdif, col = clg)
 # exercise : make an RGB plot using different years
 im.plotRGB(stackg, r = 1, g = 2, b = 3) # using the different elements of a stack to create the RGB
 
-#---------------
 
+
+#----------------------------
 # 07 External Data Import
 
-#### External data || 16 November 2023
+# 16 November 2023
 
 # always put the packages on top of the working directory
 library(terra)
@@ -572,11 +619,12 @@ plot(najadif, col = cl) # we get a raster with the differences between them
 thailand <- rast("thailand_smoke.jpg")
 plotRGB(thailand , 1,2,3)
 
-#---------------
 
-# 08 Copernicus data r
 
-### Data From Copernicus | 28 November 2023
+#-----------------------------
+# 08 Copernicus Data 
+
+# 28 November 2023
 
 library(ncdf4)
 library(terra)
@@ -605,11 +653,12 @@ plot(rastercrop[[1]]) # plots just the first element of the cropped raster
 
 #when you download another image, you can crop the second image, based on the extent of the first image by just using the crop function, and the same extent
 
-#---------------
 
+
+#---------------
 # 09 Classification
 
-# Classification | December 7 2023 
+# December 7 2023 
 
 # Procedure for Classifying Remote Sensing Data and estimate the amount of change in different classes
 
@@ -703,11 +752,12 @@ p1 <- ggplot(tabout, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identi
 p2 <- ggplot(tabout, aes(x=class, y=y2006, color=class)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100))
 p1 + p2
 
-#---------------
 
+
+#-------------------------
 # 10 Variability
 
-### Variability | 19 December 2023
+# 19 December 2023
 # measurement of RS based variability
 
 library(imageRy)
@@ -759,11 +809,12 @@ im.plotRGB(sent, r=2, g=1, b=3)
 plot(sd7, col=viridisc)  # we see where the terrain changes from snow (white) to bare soil (pink) we see that the variability graph is high in that area
                          # in other words on the color palette we see an area of bright green or yellow
 
+
+
 #---------------
+# 11 Principal Component Analysis
 
-# 11 PCA
-
-#### Principal Component Analysis | December 21 2023
+# December 21 2023
 
 library(imageRy)
 library(viridis)
