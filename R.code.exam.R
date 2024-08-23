@@ -421,8 +421,7 @@ print(ggplot_NDVI_diff_mako)
 
     # Classifying NDVI for 2016 with adjusted thresholds
     # Classification thresholds were selected based on the study:
-    # URBAN VEGETATION CLASSIFICATION WITH NDVI THRESHOLD VALUE
-    # METHOD WITH VERY HIGH RESOLUTION (VHR) PLEIADES IMAGERY
+    # URBAN VEGETATION CLASSIFICATION WITH NDVI THRESHOLD VALUE METHOD WITH VERY HIGH RESOLUTION (VHR) PLEIADES IMAGERY
     # by Haslina Hashim et. al
     
     # NDVI classification: Non-vegetation  - (-1.) - 0.1999)
