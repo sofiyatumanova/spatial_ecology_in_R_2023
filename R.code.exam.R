@@ -320,9 +320,6 @@ NDVI.2016 = (stacksent[[4]] - stacksent[[3]]) / (stacksent[[4]] + stacksent[[3]]
 plot(NDVI.2016)
 
 
-#----------
-
-
     # Importing bands for 2023
 
 b2.2023 <- rast("2023-11-20-00_00_2023-11-20-23_59_Sentinel-2_L2A_B02_(Raw).tiff")
