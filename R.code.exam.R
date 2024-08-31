@@ -24,11 +24,7 @@ install.packages("imageRy")     # to perform classification ('im.classify' funct
 install.packages("patchwork")   # to make combined plots
 install.packages("ggplot2")     # to create plots 'geom_raster', allows for 'scale_fill_viridis'
 install.packages("viridis")     # to implement colorblind friendly color palettes in ggplot2
-#----------------- the code works without devtools so when you open again, try to run again, and it it works just delete it
-#install.packages("devtools")   # for simplifying basic R functions
-#-----------------
 install.packages("tidyterra") # to perform the 'replace_na' function, necessary to avoid the 'error in 'fortify()', and
-#install.packages("imager")   # the code works without this package can delete later
 install.packages("dplyr")       # to work with data frames for example, performing the 'summarize function'
 
 
