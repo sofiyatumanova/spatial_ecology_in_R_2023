@@ -87,6 +87,21 @@ fcov2009.crop <- crop(FCOV2009,extent)
 fcov2014.crop <- crop(FCOV2014,extent)
 fcov2019.crop <- crop(FCOV2019,extent)
 
+#------------------- rasters were displaying in the wrong scale
+# adjusting the scale
+rescale_raster <- function(raster, new_min = 0, new_max = 1) {
+  old_min <- -0.5
+  old_max <- 0.5
+  rescaled_raster <- (raster - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
+  return(rescaled_raster)}
+
+# Apply the rescaling function to the cropped rasters
+fcov1999.crop <- rescale_raster(fcov1999.crop)
+fcov2004.crop <- rescale_raster(fcov2004.crop)
+fcov2009.crop <- rescale_raster(fcov2009.crop)
+fcov2014.crop <- rescale_raster(fcov2014.crop)
+fcov2019.crop <- rescale_raster(fcov2019.crop)
+
 
     # Plotting using ggplot: 1999
 
