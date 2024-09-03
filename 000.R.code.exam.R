@@ -8,10 +8,11 @@
     # and Copernicus Browser and included FCOVER rasters as well as raw bands from Sentinel-2 satellite. 
 
     # The main objectives include:
-    # - analyzing FCOVER changes over time
-    # - classifying FCOVER changes
-    # - computing vegetation indices (NDVI)
-    # - classifying vegetation types
+    # - analyzing FCOVER changes over a 20 year period (1999 - 2019)
+    # - performing classification of the FCOVER
+    # - computing the vegetation index (NDVI)
+    # - classifying the NDVI raster output
+    # - analyzing the difference in NDVI over a 7 year period
 
 
     ## DATA PREPARATION
@@ -24,19 +25,14 @@ install.packages("imageRy")     # to perform classification ('im.classify' funct
 install.packages("patchwork")   # to make combined plots
 install.packages("ggplot2")     # to create plots 'geom_raster', allows for 'scale_fill_viridis'
 install.packages("viridis")     # to implement colorblind friendly color palettes in ggplot2
-install.packages("tidyterra") # to perform the 'replace_na' function, necessary to avoid the 'error in 'fortify()', and
-install.packages("dplyr")       # to work with data frames for example, performing the 'summarize function'
+install.packages("tidyterra")   # to perform the 'replace_na' function, necessary to avoid the 'error in 'fortify()' when using ggplot
+install.packages("dplyr")       # to work with data frames for example, performing the 'summarize' function
 
+    # loading the necessary packages
 
-
-#_dplyr#_________________ Notes
-# Classify function is part of the terra package
-# Im.classify is part of the imageRy package, does the same as the terra but allows me to use viridis
-# i deleted library(devtools) and library(imager)
-
+library(ncdf4)
 library(terra)
-library(imageRy)
-library(ncdf4)      
+library(imageRy)     
 library(patchwork)  
 library(ggplot2)    
 library(viridis)
@@ -48,7 +44,7 @@ library(dplyr)
 
 
     # Downloading the data
-    # The data was downloaded from Copernicus Land Monitoring Service (CLMS) for an area in the Northeastern
+    # The data was downloaded from Copernicus Land Monitoring Service (CLMS) for an area in the Northwestern
     # part of Thailand.
     # Fraction of Green Vegetation Cover (FCOVER) was downloaded for the years : 
     # 1999
@@ -83,15 +79,17 @@ fcov2009.crop <- crop(FCOV2009,extent)
 fcov2014.crop <- crop(FCOV2014,extent)
 fcov2019.crop <- crop(FCOV2019,extent)
 
-#------------------- rasters were displaying in the wrong scale
-# adjusting the scale
+    # Rasters were displaying in the wrong scale so rescaling was needed
+    # Creating a function to rescale all the FCOVER rasters
+
 rescale_raster <- function(raster, new_min = 0, new_max = 1) {
   old_min <- -0.5
   old_max <- 0.5
   rescaled_raster <- (raster - old_min) / (old_max - old_min) * (new_max - new_min) + new_min
   return(rescaled_raster)}
 
-# Apply the rescaling function to the cropped rasters
+    # Apply the rescaling function to the cropped rasters
+
 fcov1999.crop <- rescale_raster(fcov1999.crop)
 fcov2004.crop <- rescale_raster(fcov2004.crop)
 fcov2009.crop <- rescale_raster(fcov2009.crop)
@@ -171,7 +169,7 @@ ggplot2019 <- ggplot() +
 
 combined_plot <- (ggplot1999 + ggplot2004 + ggplot2009) /
   (ggplot2014 + ggplot2019) +
-  plot_layout(guides = "collect")   # To make sure the color scale is consistent in all images
+  plot_layout(guides = "collect")   # Combines the legends from all the plots into one single legend (scale)
 print(combined_plot)
 
 
@@ -180,7 +178,7 @@ print(combined_plot)
 
     # Analysis of the forest cover
 
-    # Seeing the difference between forest cover over 20 year period (from 1999 to 2019)
+    # Calculating the difference between forest cover over 20 year period (from 1999 to 2019)
 
 diff.1999.2019 <- fcov2019.crop - fcov1999.crop
 
@@ -237,7 +235,7 @@ print(ggplot_class_diff)
 
 combined_plots <- ggplot_diff.1999.2019 + ggplot_class_diff
    
-    # Results: two plots showing the difference in F cover over a 20 year period, and a classified raster
+    # Results: two plots showing the difference in FCOVER over a 20 year period, and a classified raster
 
 print(combined_plots)
 
@@ -245,9 +243,9 @@ print(combined_plots)
     # 4. PERCENT OF CHANGE IN FCOVER
 
 
-    # Counting the change of F Cover from 1999 to 2019 in percentages using 3 categories:
+    # Counting the change of FCOVER from 1999 to 2019 in percentages using 3 categories:
   
-    # 'Decrease', 'Increase', and 'No Change' in F Cover
+    # 'Decrease', 'Increase', and 'No Change' in FCOVER
 
     # Counting the total number of pixels in the raster
 
@@ -554,7 +552,7 @@ ggplot(pixel_counts, aes(x = NDVI_Class, y = Difference, fill = NDVI_Class)) +
     # 9. PIXEL COUNT PERCENTAGE CHANGE
 
 
-    # Seeing the percentage change in Each category
+    # Seeing the percentage change in each category
     # Merging the counts data frames withe the 'merge' function
 
 count_summary <- merge(count_2016, count_2023, by = "NDVI_Class")
