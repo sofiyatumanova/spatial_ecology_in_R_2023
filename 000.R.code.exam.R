@@ -516,20 +516,23 @@ plot(combined.ndvi.class.plots)
 
     # Counting pixel numbers in each category for 2016 and 2023
 
+    # Counting NDVI_Class occurrences in 2016
 count_2016 <- ndvi_2016_df_no_na %>%
   group_by(NDVI_Class) %>%
   summarize(Count_2016 = n())
 
+    # Counting NDVI_Class occurrences in 2023
 count_2023 <- ndvi_2023_df_no_na %>%
   group_by(NDVI_Class) %>%
   summarize(Count_2023 = n())
 
-
-    # Joining the counts data
+    # Joining the counts data and handling missing values
 pixel_counts <- count_2016 %>%
   full_join(count_2023, by = "NDVI_Class") %>%
-  mutate(Count_2023 = replace_na(Count_2023, 0)) %>%
-  mutate(Difference = Count_2023 - Count_2016)
+  mutate(
+    Count_2016 = replace_na(Count_2016, 0),  
+    Count_2023 = replace_na(Count_2023, 0),  
+    Difference = Count_2023 - Count_2016)
 
     # Converting 'NDVI_Class' to factor for proper ordering
 pixel_counts$NDVI_Class <- factor(pixel_counts$NDVI_Class, 
