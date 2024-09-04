@@ -539,6 +539,7 @@ pixel_counts$NDVI_Class <- factor(pixel_counts$NDVI_Class,
     # Creating a bar plot for pixel count differences
 ggplot(pixel_counts, aes(x = NDVI_Class, y = Difference, fill = NDVI_Class)) +
   geom_bar(stat = "identity") +
+  geom_text(aes(label = Difference), vjust = -0.5, size = 5, color = "black") +
   scale_fill_manual(values = c("No Vegetation" = "purple",
                                "Low Vegetation" = "lightgreen",
                                "Dense Vegetation" = "darkgreen")) +
