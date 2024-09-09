@@ -435,13 +435,13 @@ print(ggplot_NDVI_diff_mako)
     
     # NDVI classification: Non-vegetation  - (-1.) - 0.1999)
     #                      Low Vegetation  - (0.2 - 0.5)
-    #                      High Vegetation - (0.501 - 1.0)
+    #                      Dense Vegetation - (0.501 - 1.0)
 
 
 
     # Defining the matrix for reclassification
 
-rcl_matrix <- matrix(c(-1, 0.1999, 1,  # No Vegetation + Clouds
+rcl_matrix <- matrix(c(-1, 0.1999, 1,  # Non Vegetation 
                        0.2, 0.4999, 2,   # Low Vegetation
                        0.5, 1, 3),     # Dense Vegetation
                      ncol = 3, byrow = TRUE)
@@ -481,7 +481,7 @@ ndvi_2023_df_no_na$NDVI_Class <- factor(ndvi_2023_df_no_na$NDVI_Class,
     # Plotting classified NDVI for 2016 using ggplot
 ggplot_ndvi_2016 <- ggplot(ndvi_2016_df_no_na, aes(x = x, y = y, fill = NDVI_Class)) +
   geom_raster() +
-  scale_fill_manual(values = c("No Vegetation" = "purple",
+  scale_fill_manual(values = c("Non Vegetation" = "purple",
                                "Low Vegetation" = "lightgreen",
                                "Dense Vegetation" = "darkgreen"),
                                 name = "NDVI Class") +
@@ -494,7 +494,7 @@ ggplot_ndvi_2016 <- ggplot(ndvi_2016_df_no_na, aes(x = x, y = y, fill = NDVI_Cla
     # Plotting classified NDVI for 2023 using ggplot
 ggplot_ndvi_2023 <- ggplot(ndvi_2023_df_no_na, aes(x = x, y = y, fill = NDVI_Class)) +
   geom_raster() +
-  scale_fill_manual(values = c("No Vegetation" = "purple",
+  scale_fill_manual(values = c("Non Vegetation" = "purple",
                                "Low Vegetation" = "lightgreen",
                                "Dense Vegetation" = "darkgreen"),
                     name = "NDVI Class") +
@@ -540,7 +540,7 @@ pixel_counts$NDVI_Class <- factor(pixel_counts$NDVI_Class,
 ggplot(pixel_counts, aes(x = NDVI_Class, y = Difference, fill = NDVI_Class)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = Difference), vjust = -0.5, size = 5, color = "black") +
-  scale_fill_manual(values = c("No Vegetation" = "purple",
+  scale_fill_manual(values = c("Non Vegetation" = "purple",
                                "Low Vegetation" = "lightgreen",
                                "Dense Vegetation" = "darkgreen")) +
   labs(x = "NDVI Class", y = "Difference in Pixel Count",
@@ -572,7 +572,7 @@ ggplot(count_summary, aes(x = NDVI_Class, y = Percent_Change, fill = NDVI_Class)
   geom_bar(stat = "identity") +
   geom_text(aes(label = paste0(Percent_Change, "%")), 
             vjust = vjust_values, size = 5, color = "black") +  # Add labels above/below each bar
-  scale_fill_manual(values = c("No Vegetation" = "purple",
+  scale_fill_manual(values = c("Non Vegetation" = "purple",
                                "Low Vegetation" = "lightgreen",
                                "Dense Vegetation" = "darkgreen")) +
   labs(x = "NDVI Class", y = "Percentage Change (%)", title = "Percentage Change in NDVI Categories (2016 to 2023)") +
