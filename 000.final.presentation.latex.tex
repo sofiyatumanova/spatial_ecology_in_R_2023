@@ -1,0 +1,421 @@
+% Spatial Ecology in R Presentation in LaTeX
+\documentclass[8pt]{beamer}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+
+% Theme choice:
+\usetheme{Frankfurt}
+%
+%
+%change colour of theme
+\usecolortheme{seahorse}
+%
+% Packages
+\usepackage[utf8]{inputenc}  % For UTF-8 encoding
+\usepackage{graphicx}        % For including images
+\usepackage{amsmath}         % For mathematical symbols and equations
+
+
+
+\title{Spatial Ecology in R Final Examination Project}
+\subtitle{Vegetation Analysis in Northwestern Thailand Using R}
+\institute{University of Bologna}
+\author{Sofiya Tumanova}
+\date{\today}
+
+\begin{document}
+
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Table of Contents
+\begin{frame}{Table of Contents}
+    \tableofcontents
+\end{frame}
+
+% Section 1
+\section{Introduction}
+\subsection{Project Overview}
+\begin{frame}{Project Overview}
+    \textbf{Overview}\\
+    Multi temporal analysis of vegetation in Northwestern Thailand. Specifically focusing on Fraction of Green Vegetation Cover and the Normalized Difference Vegetation Index.\\ 
+    \smallskip
+    \textbf{Objectives}
+    \begin{itemize}
+        \item Analyzing FCOVER changes over a 20 year period\\
+        (1999 - 2019)
+        \item Performing a classification of the FCOVER
+        \item Computing the vegetation index (NDVI)
+        \item Classifying the NDVI raster output
+        \item Analyzing the differences in NDVI over a 7 year period\\
+        (2016 - 2023)
+    \end{itemize}    
+\end{frame}
+
+\begin{frame}{Vegetation Analysis}
+    \begin{columns}[T] % Align columns at the top
+        \column{0.5\textwidth}
+        \textbf{FCOVER}
+        \begin{itemize}
+            \item Fraction of Green Vegetation Cover
+            \item Represents the portion of ground covered by green vegetation
+            \item \textbf{Range:} 0 - 1
+                \begin{itemize}
+                    \item 0: No Vegetation Cover (Bare Soil, Water)
+                    \item 1: Full Vegetation Cover
+                \end{itemize}
+            \item \textbf{Common Uses:}
+                \begin{itemize}
+                    \item Land Use and Land Cover
+                    \item Forestry - estimate canopy density
+                    \item Climate Studies
+                \end{itemize}
+        \end{itemize}
+
+        \column{0.5\textwidth}
+        \textbf{NDVI}
+        \begin{itemize}
+            \item Normalized Difference Vegetation Index
+            \item Measures vegetation health and density
+            \item Uses reflectance values from the RED and NIR bands
+            \item \textbf{Range:} -1 to 1
+                \begin{itemize}
+                    \item -1: Water or No Vegetation
+                    \item 1: Dense Vegetation
+                \end{itemize}
+            \item \textbf{Common Uses:}
+                \begin{itemize}
+                    \item Vegetation Health
+                    \item Agriculture - crop stress
+                    \item Drought Monitoring
+                \end{itemize}
+        \end{itemize}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth]{NDVI stressed vs healthy leaves.jpg}
+        \end{figure}
+    \end{columns}
+\end{frame}
+
+\subsection{Areas of Interest}
+\begin{frame}{Areas of Interest} 
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \begin{itemize}
+            \item \textbf{Study Area 1:}\\ FCOVER Analysis of Northwestern Thailand: 1999 to 2019\\
+            98.5, 100.7, 16.6, 18.9 ( 59,394 km\(^2\))
+            \item \textbf{Study Area 2:}\\ NDVI Analysis of Doi Inthanon National Park and Surrounding Areas: 2016 and 2023\\
+             98.3, 99.4, 17.9, 19.0 (13,788 km\(^2\)) 
+        \end{itemize}
+
+        \column{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{Spatial ecology in R.png}
+    \end{columns}
+\end{frame} 
+   
+
+
+% Section 2
+\section{Data}
+\subsection{Data Download}
+\begin{frame}{Data Download} 
+    \begin{columns}[t] % Aligns the top of the columns
+        \column{0.5\textwidth} 
+        \textbf{FCOVER}
+        \begin{itemize}
+            \item Copernicus Land Monitoring Service\\
+            February: 1999, 2004, 2009, 2014, 2019
+            \item Spatial Resolution: 1km
+            \item Temporal Resolution: 10 days
+            \item \url{https://land.copernicus.eu/en}
+        \end{itemize}
+
+        \column{0.5\textwidth} 
+        \textbf{NDVI}
+        \begin{itemize}
+            \item Copernicus Browser\\
+            November: 2016, 2023
+            \item Satellite: Sentinel 2
+            \item Level: 2A BOA
+            \item Cloud Cover less than 10\%
+            \item Bands: 2, 3, 4, 8
+            \item \url{https://browser.dataspace.copernicus.eu/}
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\subsection{Pre-Processing}
+\begin{frame}{Pre-Processing: Fraction of Green Vegetation Cover}
+\begin{columns}[t]
+        \column{0.3\textwidth} 
+        \textbf{FCOVER}
+        \begin{itemize}
+            \item Data was loaded into R and cropped to the same extent using the \texttt{crop} function from the terra package\\
+            \item Data was visualized by plotting each raster with \texttt{ggplot}
+            \item Viridis option "mako" was used
+        \end{itemize}
+
+        \column{0.7\textwidth} 
+        \textbf{FCOVER Plots for a 20 Year Period}
+        \centering
+        \includegraphics[width=0.9\textwidth]{FCOVER 1999 to 2019 plot reclassified.jpeg}
+        
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Pre-Processing: Normalized Difference Vegetation Index}
+\small
+\begin{columns}[t]
+        \column{0.3\textwidth} 
+        \textbf{NDVI}
+        \begin{itemize}
+            \item Each band was imported into R Studio and cropped to the same extent using the \texttt{crop} function\\
+            \item A true color and false color composite was created for visualization purposes
+            \item True Color Composite: R, G, B (4,3,2)
+            \item False Color Composite: NIR, R, G (8,4,3)
+        \end{itemize}
+
+        \column{0.7\textwidth} 
+    \textbf{True and False Color Composites}
+    \centering
+    \vbox{
+        \includegraphics[width=0.9\textwidth]{color composite 2016.png}\\
+        \includegraphics[width=0.9\textwidth]{color composite 2023.png}
+    }
+    \end{columns}
+\end{frame}
+
+
+
+% Section 3
+\section{Analysis and Results}
+\subsection{FCOVER Analysis}
+
+\begin{frame}{FCOVER Analysis: Difference Raster}
+\small  % Reduce font size for the entire slide
+\begin{columns}[T]
+    \column{0.3\textwidth} 
+    \textbf{20-year difference in FCOVER}
+    \begin{itemize}
+        \item To visualize change, the 1999 FCOVER raster was subtracted from the 2019 FCOVER raster.
+        \item The output raster was plotted with \texttt{ggplot} function
+        \item Viridis color scale option "magma" was used for visualization.
+    \end{itemize}
+
+    \column{0.7\textwidth} 
+    \centering
+    \includegraphics[width=0.9\textwidth]{FCOVER diff from 1999 to 2019.png}
+    
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{FCOVER Analysis: Classification}
+  \small  % Reduce font size for the entire slide
+\begin{columns}[T]
+    \column{0.4\textwidth} 
+    \textbf{Classification of FCOVER difference raster}
+    \begin{itemize}
+        \item For better interpretation, the difference raster was classified into 3 categories\\
+        Decrease, Increase, No Change
+        \item The \texttt{im.classify} function from the imageRy package was used for classification.
+        \item Threshold for classes : -0.0001,0,0.0001
+    \end{itemize}
+
+    \column{0.6\textwidth} 
+    \centering
+    \includegraphics[width=0.9\textwidth]{FCOVER Change Classified.jpeg}
+    
+\end{columns} 
+\end{frame}
+
+\begin{frame}{FCOVER Analysis: Side by Side Comparison}
+\centering
+\includegraphics[width=0.9\textwidth]{FCOVER change and classified side by side.png}
+    
+\end{frame}
+
+\begin{frame}{FCOVER Analysis: Calculation of Percent Change}
+\textbf{Methods:}
+    \begin{itemize}
+        \item Counting total number of pixels using \texttt{ncell} function from the terra package
+        \item Counting the percentage of pixels falling into each category with the following formula:\\
+        \[
+\frac{\text{freq}(\text{class.diff.1999.2019})}{\text{pixel\_total}} \times 100
+\]
+        \item Creating a vector with 3 categories:\\
+         Decrease, No Change, Increase
+        \item Creating a second vector with the percentages calculated earlier
+        \item Creating a dataframe and populating the values by creating two vectors, one with the 3 change categories, and another with the calculated percent values
+        \item Plotting using \texttt{ggplot}
+    \end{itemize}  
+\end{frame}
+
+\subsection{FCOVER Results}
+
+\begin{frame}{Results FCOVER Analysis: Calculation of Percent Change}
+    %\centering
+    \includegraphics[width=0.9\textwidth]{FCOVER change in percentages.jpeg}
+\end{frame}
+
+
+\subsection{NDVI Analysis}
+
+\begin{frame}{NDVI Analysis: Calculating NDVI}
+\begin{columns}[t]
+    \column{0.4\textwidth}
+    \textbf{Methods}
+    \begin{itemize}
+        \item The \textbf{Normalized Difference Vegetation Index} (NDVI) was calculated using the following formula:
+        \begin{equation}
+            \text{NDVI} = \frac{\text{NIR} - \text{RED}}{\text{NIR} + \text{RED}}
+        \end{equation}
+        \item Where NIR is the Near Infrared Band (Band 8) and RED is the Red Band (Band 4).
+        \item This process was repeated with the 2016 and 2023 images.
+        \item The NDVI results were plotted using the \texttt{ggplot} function using the "viridis" color palette.
+    \end{itemize} 
+    
+    \column{0.6\textwidth}
+    \textbf{NDVI Plots for 2016 and 2023}
+    \centering
+    \includegraphics[width=0.7\textwidth]{NDVI cropped plots.png}
+\end{columns}
+\end{frame}
+
+\begin{frame}{NDVI Analysis: Difference Raster}
+\small  % Reduce font size for the entire slide
+\begin{columns}[T]
+    \column{0.4\textwidth} 
+    \textbf{7-year difference in NDVI}
+    \begin{itemize}
+        \item To visualize change, the 2016 NDVI raster was subtracted from the 2023 NDVI raster.
+        \item The output raster was plotted with \texttt{ggplot}.
+        \item Viridis color scale option "viridis" was used for visualization.
+    \end{itemize}
+
+    \column{0.6\textwidth} 
+    \textbf{NDVI Difference Plot}
+    %\centering
+    \includegraphics[width=0.9\textwidth]{NDVI difference 2016 to 2023.jpeg}
+    
+\end{columns}
+\end{frame}
+
+\begin{frame}{NDVI Analysis: Classification of 2016 and 2023 rasters}
+\textbf{Methods:}
+    \begin{itemize}
+        \item Classification of NDVI was based on the study: \\
+        \bigskip
+        \textit{Urban Vegetation Classification with NDVI Threshold Value Method Using Very High Resolution (VHR) Pleiades Imagery} by Hashim et al., 2019 \\
+        \bigskip
+        \url{https://isprs-archives.copernicus.org/articles/XLII-4-W16/237/2019/}
+        \smallskip
+        \item Created a reclassification matrix using the \texttt{matrix} function
+        \item Reclassified each NDVI raster using the \texttt{reclassify} function according to the categories:
+        \begin{itemize}
+            \item \textbf{Non Vegetation} for level 1: \hspace{0.5cm} \(-1.0 \leq \text{NDVI} < 0.2\)
+            \item \textbf{Low Vegetation} for level 2: \hspace{0.5cm} \(0.2 \leq \text{NDVI} \leq 0.5\)
+            \item \textbf{Dense Vegetation} for level 3: \hspace{0.5cm} \(0.501 \leq \text{NDVI} \leq 1.0\)
+        \end{itemize}
+        \item Generated plots using the \texttt{ggplot} function
+    \end{itemize}  
+\end{frame}
+
+\begin{frame}{Classified NDVI Plots 2016 and 2023}
+    \centering
+    \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{classified NDVI plots side by side.png}
+\end{frame}
+
+
+\begin{frame}{NDVI Analysis: Difference in Pixel Count Between 2016 and 2023}
+\textbf{Methods:}
+    \begin{itemize}
+        \item Counted the pixels belonging into each NDVI\_Class for 2016 and 2023 classified NDVI rasters 
+        \item Functions used: \texttt{n()} and \texttt{summarize()}
+        \item Joined counts together into a single df using the \texttt{full\_join} function
+        \item Created a “Difference” column and calculated the difference by subtracting 2016 from the 2023 pixel count
+        \item Converted the NDVI\_Class column into a factor (categorical variable) using the \texttt{factor} function, which allows me to represent data in a specific order (levels: 1, 2, 3) “Non vegetation”, “Low Vegetation”, and “Dense Vegetation”
+        \item Generated plot using the \texttt{ggplot} function
+    \end{itemize}
+\end{frame}
+
+\subsection{NDVI Results}
+
+\begin{frame}{Results NDVI Analysis: Difference in Pixel Count Between 2016 and 2023}
+        \centering
+        \includegraphics[width=\textwidth]{difference in pixel counts from 2016 to 2023.png}   
+\end{frame}
+
+\begin{frame}{NDVI Analysis: Pixel Count Percent Change 2016 and 2023}
+\textbf{Methods:}
+    \begin{itemize}
+        \item A new df "counts\_summary" was created by combining pixel counts from each df using the function \texttt{merge} based on the common column: "NDVI\_Class"
+        \item Percentage change was calculated with the following formula\\
+        \[
+\text{Percent Change} = \left(\frac{\text{Count}_{2023} - \text{Count}_{2016}}{\text{Count}_{2016}}\right) \times 100
+\]
+        \item A new column "Percent\_Change" was created with the values obtained from the formula
+        \item Generated plot using the \texttt{ggplot} function
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Result NDVI Analysis: Pixel Count Percent Change 2016 and 2023}
+        \centering
+        \includegraphics[width=\textwidth]{percentage change in NDVI categories.png} 
+\end{frame}
+
+
+% Section 4
+\section{Conclusion}
+
+
+\begin{frame}{Summary of Results and Considerations}
+\begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{itemize}
+    \item \textbf{Main Findings FCOVER between 1999 and 2019}
+        \begin{itemize}
+         \item 13.7\% of pixels had a decrease in FCOVER
+         \item 42.21\% of pixels had an increase in FCOVER
+         \item 44.09\% of pixels had no change in FCOVER
+    \end{itemize}
+    \item \textbf{Main Findings NDVI between 2016 and 2023}
+    \begin{itemize}
+        \item 44.22\% increase of pixels in the "Non Vegetation Category"
+        \item 19.62\% increase of pixels in the "Non Vegetation Category"
+        \item 2.12\% decrease of pixels in the "Dense Vegetation Category"
+    \end{itemize}
+    \end{itemize}
+        \column{0.5\textwidth}
+        \begin{itemize}
+            \item \textbf{Suggestions and Future Considerations}
+            \begin{itemize}
+                \item Removing NA values can have an effect on the overall statistics
+                \item Cloud cover influences results
+                \item Bigger temporal extent needed for more analysis
+                \item Combination with other analysis such as:
+                \begin{itemize}
+                    \item Soil Moisture Index (SMI)
+                    \item Normalized Difference Water Index (NDWI)
+                \end{itemize}
+            \end{itemize}
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Final frame
+\begin{frame}
+    \centering
+    \Huge{Thank You for Your Attention}\\
+    \vspace*{\fill}
+    \small
+    Universita Di Bologna\\
+    sofiya.tumanova@studio.unibo.it
+\end{frame}
+
+\end{document}
